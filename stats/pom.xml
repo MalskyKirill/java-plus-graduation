@@ -12,9 +12,9 @@
     <artifactId>stats</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>ewm-stat-client</module>
-        <module>ewm-stat-dto</module>
-        <module>ewm-stat-service</module>
+        <module>stat-client</module>
+        <module>stat-dto</module>
+        <module>stat-service</module>
     </modules>
 
     <properties>
