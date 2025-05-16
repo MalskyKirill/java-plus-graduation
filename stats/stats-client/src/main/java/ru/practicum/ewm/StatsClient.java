@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@FeignClient(name = "stat-service")
+@FeignClient(name = "stats-server")
 public interface StatsClient {
 
     @PostMapping("/hit")
