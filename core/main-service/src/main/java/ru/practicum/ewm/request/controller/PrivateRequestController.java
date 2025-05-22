@@ -43,5 +43,4 @@ public class PrivateRequestController {
         return ResponseEntity.ok(canceledRequest);
     }
 
-
 }

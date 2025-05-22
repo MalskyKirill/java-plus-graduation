@@ -1,4 +1,4 @@
-package ru.practicum.ewm.comment.dto.mapper;
+package ru.practicum.ewm.comment.mapper;
 
 import ru.practicum.ewm.comment.dto.CommentShortDto;
 import ru.practicum.ewm.comment.dto.NewComment;

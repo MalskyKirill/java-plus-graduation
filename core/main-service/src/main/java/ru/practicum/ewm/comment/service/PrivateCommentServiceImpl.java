@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.comment.dto.CommentShortDto;
 import ru.practicum.ewm.comment.dto.NewComment;
 import ru.practicum.ewm.comment.dto.UpdateCommentDto;
-import ru.practicum.ewm.comment.dto.mapper.CommentMapper;
+import ru.practicum.ewm.comment.mapper.CommentMapper;
 import ru.practicum.ewm.comment.model.Comment;
 import ru.practicum.ewm.comment.repository.CommentRepository;
 import ru.practicum.ewm.event.model.Event;
