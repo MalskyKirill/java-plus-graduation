@@ -14,6 +14,7 @@ import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +44,9 @@ public class AdminUserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new ValidationException("Пользователь с email = " + user.getEmail() + " уже существует");
         }
+    }
+
+    public Optional<User> getUser(Long userId) {
+        return userRepository.findById(userId);
     }
 }
