@@ -14,4 +14,7 @@ spring:
                     uri: lb://request-service
                     predicates:
                         - Path=/users/*/requests/**
-
+                - id: event-service
+                  uri: lb://event-service
+                  predicates:
+                      - Path=/admin/events/**, /users/*/events/**, /users/*/events/*/requests/**, /events/**, /categories/**, /admin/categories/**, /admin/compilations/**, /compilations/**, /users/*/events/*/comments/**, /events/*/comments/**
