@@ -15,20 +15,21 @@ public interface RequestRepository extends JpaRepository<ParticipationRequest, L
     List<ParticipationRequest> findAllByRequesterId(Long requesterId);
 
     // Все заявки на конкретное событие
-//    List<ParticipationRequest> findAllByEventId(Long eventId);
-//
-//    // Метод для получения количества заявок с определенным eventId и статусом CONFIRMED
-//    @Query("""
-//            SELECT COUNT(pr)
-//            FROM ParticipationRequest pr
-//            WHERE pr.event.id = :eventId AND pr.status = 'CONFIRMED'
-//            """)
-//    Long countConfirmedRequestsByEventId(@Param("eventId") Long eventId);
-//
-//    boolean existsByRequesterIdAndEventId(Long requesterId, Long eventId);
-//
-//    Optional<ParticipationRequest> findByIdAndRequesterId(Long requestId, Long requesterId);
-//
-//    @Query("SELECT e.views FROM Event e WHERE e.id = :eventId")
-//    Long getViewsForEvent(@Param("eventId") Long eventId);
+    List<ParticipationRequest> findAllByEventId(Long eventId);
+
+    // Метод для получения количества заявок с определенным eventId и статусом CONFIRMED
+
+    @Query("""
+            SELECT COUNT(pr)
+            FROM ParticipationRequest pr
+            WHERE pr.event = :eventId AND pr.status = 'CONFIRMED'
+            """)
+    Long countConfirmedRequestsByEventId(@Param("eventId") Long eventId);
+
+    boolean existsByRequesterIdAndEventId(Long requesterId, Long eventId);
+
+    Optional<ParticipationRequest> findByIdAndRequesterId(Long requestId, Long requesterId);
+
+    @Query("SELECT e.views FROM Event e WHERE e.id = :eventId")
+    Long getViewsForEvent(@Param("eventId") Long eventId);
 }

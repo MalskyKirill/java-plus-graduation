@@ -14,7 +14,11 @@ import ru.practicum.dto.request.ParticipationRequestDto;
 //import ru.practicum.ewm.exception.ValidationException;
 
 
+import ru.practicum.event.model.Event;
+import ru.practicum.event.model.EventState;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.ParticipantLimitReachedException;
+import ru.practicum.exception.ValidationException;
 import ru.practicum.request.model.RequestStatus;
 import ru.practicum.repository.RequestRepository;
 import ru.practicum.request.mapper.RequestMapper;
@@ -45,63 +49,63 @@ public class RequestService {
     }
 
 
-//    @Transactional
-//    public ParticipationRequestDto addRequest(Long userId, Long eventId) {
-//        User user = getUserOrThrow(userId);
-//        Event event = getEventOrThrow(eventId);
-//
-//
-//        if (event.getInitiator().getId().equals(userId)) {
-//            throw new ValidationException("Инициатор события не может добавить запрос на участие в своём событии.");
-//        }
-//
-//        if (event.getState() != EventState.PUBLISHED) {
-//            throw new ValidationException("Нельзя участвовать в неопубликованном событии.");
-//        }
-//        if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
-//            throw new ValidationException("Нельзя повторно подавать заявку на то же событие.");
-//        }
-//        if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
-//            throw new ParticipantLimitReachedException("Лимит участников уже достигнут");
-//        }
-//
-//        ParticipationRequest request = new ParticipationRequest();
-//        request.setCreated(LocalDateTime.now());
-//        request.setEvent(event);
-//        request.setRequester(user);
-///* Условие !event.isRequestModeration()- если для события не требуется премодерация заявок на участие, то заявка должна автоматически переходить в статус CONFIRMED.
-//"Если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного".
-//Условие event.getParticipantLimit() == 0 - если нет ограничения на количество участников (лимит равен 0), заявка тоже должна автоматически подтверждаться.
-//"Если для события лимит заявок равен 0, то подтверждение заявок не требуется".
-//Статусы заявок - если хотя бы одно из условий выполняется, заявка переходит в статус CONFIRMED. Если оба
-//условия не выполняются (например, премодерация включена и есть лимит участников), заявка остается в статусе PENDING.*/
-//        boolean autoConfirm = !event.isRequestModeration() || event.getParticipantLimit() == 0;
-//        request.setStatus(autoConfirm ? RequestStatus.CONFIRMED : RequestStatus.PENDING);
-//        ParticipationRequest savedRequest = requestRepository.save(request);
-//        //если заявка CONFIRMED, нужно увеличить счётчик confirmedRequests
-//        if (RequestStatus.CONFIRMED.equals(savedRequest.getStatus())) {
-//            updateConfirmedRequests(event.getId());
-//        }
-//        return RequestMapper.toParticipationRequestDto(savedRequest);
-//    }
-//
-//    @Transactional
-//    public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
-//
-//        ParticipationRequest request = requestRepository.findByIdAndRequesterId(requestId, userId)
-//                .orElseThrow(() -> new NotFoundException("Заявка не найдена или не принадлежит пользователю."));
-//        boolean wasConfirmed = RequestStatus.CONFIRMED.equals(request.getStatus());
-//        request.setStatus(RequestStatus.CANCELED);
-//        ParticipationRequest updatedRequest = requestRepository.save(request);
-//
-//        if (wasConfirmed) {
-//            updateConfirmedRequests(request.getEvent().getId());
-//        }
-//
-//
-//        return RequestMapper.toParticipationRequestDto(updatedRequest);
-//
-//    }
+    @Transactional
+    public ParticipationRequestDto addRequest(Long userId, Long eventId) {
+        User user = getUser(userId);
+        Event event = getEventOrThrow(eventId);
+
+
+        if (event.getInitiatorId().equals(userId)) {
+            throw new ValidationException("Инициатор события не может добавить запрос на участие в своём событии.");
+        }
+
+        if (event.getState() != EventState.PUBLISHED) {
+            throw new ValidationException("Нельзя участвовать в неопубликованном событии.");
+        }
+        if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
+            throw new ValidationException("Нельзя повторно подавать заявку на то же событие.");
+        }
+        if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
+            throw new ParticipantLimitReachedException("Лимит участников уже достигнут");
+        }
+
+        ParticipationRequest request = new ParticipationRequest();
+        request.setCreated(LocalDateTime.now());
+        request.setEventId(eventId);
+        request.setRequesterId(userId);
+/* Условие !event.isRequestModeration()- если для события не требуется премодерация заявок на участие, то заявка должна автоматически переходить в статус CONFIRMED.
+"Если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного".
+Условие event.getParticipantLimit() == 0 - если нет ограничения на количество участников (лимит равен 0), заявка тоже должна автоматически подтверждаться.
+"Если для события лимит заявок равен 0, то подтверждение заявок не требуется".
+Статусы заявок - если хотя бы одно из условий выполняется, заявка переходит в статус CONFIRMED. Если оба
+условия не выполняются (например, премодерация включена и есть лимит участников), заявка остается в статусе PENDING.*/
+        boolean autoConfirm = !event.isRequestModeration() || event.getParticipantLimit() == 0;
+        request.setStatus(autoConfirm ? RequestStatus.CONFIRMED : RequestStatus.PENDING);
+        ParticipationRequest savedRequest = requestRepository.save(request);
+        //если заявка CONFIRMED, нужно увеличить счётчик confirmedRequests
+        if (RequestStatus.CONFIRMED.equals(savedRequest.getStatus())) {
+            updateConfirmedRequests(event.getId());
+        }
+        return RequestMapper.toParticipationRequestDto(savedRequest);
+    }
+
+    @Transactional
+    public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
+
+        ParticipationRequest request = requestRepository.findByIdAndRequesterId(requestId, userId)
+                .orElseThrow(() -> new NotFoundException("Заявка не найдена или не принадлежит пользователю."));
+        boolean wasConfirmed = RequestStatus.CONFIRMED.equals(request.getStatus());
+        request.setStatus(RequestStatus.CANCELED);
+        ParticipationRequest updatedRequest = requestRepository.save(request);
+
+        if (wasConfirmed) {
+            updateConfirmedRequests(request.getEvent().getId());
+        }
+
+
+        return RequestMapper.toParticipationRequestDto(updatedRequest);
+
+    }
 //
 //    public List<ParticipationRequestDto> getRequestsForUserEvent(Long userId, Long eventId) {
 //        checkUserExists(userId);

@@ -49,4 +49,8 @@ public class AdminUserService {
     public Optional<User> getUser(Long userId) {
         return userRepository.findById(userId);
     }
+
+    public List<User> getUsersWithIds(List<Long> ids) {
+        return userRepository.findAllById(ids);
+    }
 }

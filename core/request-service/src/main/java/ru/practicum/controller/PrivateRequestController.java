@@ -26,22 +26,22 @@ public class PrivateRequestController {
         return ResponseEntity.ok(requests);
     }
 
-//    @PostMapping
-//    public ResponseEntity<ParticipationRequestDto> addRequest(@PathVariable Long userId,
-//                                                              @RequestParam Long eventId) {
-//        log.info("[POST] Добавление запроса на участие. Пользователь: {}, Событие: {}", userId, eventId);
-//        ParticipationRequestDto request = requestService.addRequest(userId, eventId);
-//
-//        return ResponseEntity.status(201).body(request);
-//    }
-//
-//
-//    @PatchMapping("/{requestId}/cancel")
-//    public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable Long userId,
-//                                                                 @PathVariable Long requestId) {
-//        log.info("[PATCH] Отмена запроса с ID {} для пользователя {}", userId, requestId);
-//        ParticipationRequestDto canceledRequest = requestService.cancelRequest(userId, requestId);
-//        return ResponseEntity.ok(canceledRequest);
-//    }
+    @PostMapping
+    public ResponseEntity<ParticipationRequestDto> addRequest(@PathVariable Long userId,
+                                                              @RequestParam Long eventId) {
+        log.info("[POST] Добавление запроса на участие. Пользователь: {}, Событие: {}", userId, eventId);
+        ParticipationRequestDto request = requestService.addRequest(userId, eventId);
+
+        return ResponseEntity.status(201).body(request);
+    }
+
+
+    @PatchMapping("/{requestId}/cancel")
+    public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable Long userId,
+                                                                 @PathVariable Long requestId) {
+        log.info("[PATCH] Отмена запроса с ID {} для пользователя {}", userId, requestId);
+        ParticipationRequestDto canceledRequest = requestService.cancelRequest(userId, requestId);
+        return ResponseEntity.ok(canceledRequest);
+    }
 
 }
