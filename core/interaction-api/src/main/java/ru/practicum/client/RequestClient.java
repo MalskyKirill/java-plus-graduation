@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
+import feign.FeignException;
 
 import java.util.List;
 

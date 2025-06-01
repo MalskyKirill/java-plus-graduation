@@ -86,6 +86,11 @@ public class AdminEventServiceImpl implements AdminEventService {
         return eventMapper.toEventFullDto(eventRepository.save(existEvent));
     }
 
+    @Override
+    public Event saveEventFull(Event event) {
+        return eventRepository.save(event);
+    }
+
     private Event checkEventExist(Long id) {
         Optional<Event> maybeEvent = eventRepository.findById(id);
         if (maybeEvent.isPresent()) {

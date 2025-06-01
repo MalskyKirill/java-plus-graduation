@@ -8,6 +8,7 @@ import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.category.NewCategoryDto;
+import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ValidationException;
 
 

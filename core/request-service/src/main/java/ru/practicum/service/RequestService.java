@@ -4,16 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.client.EventClient;
 import ru.practicum.client.UserServiceClient;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
-//import ru.practicum.ewm.event.model.Event;
-//import ru.practicum.ewm.event.model.EventState;
-//import ru.practicum.ewm.event.repository.EventRepository;
 
-//import ru.practicum.ewm.exception.ParticipantLimitReachedException;
-//import ru.practicum.ewm.exception.ValidationException;
 
 
 import ru.practicum.event.model.Event;
@@ -39,7 +35,7 @@ import java.util.stream.Collectors;
 public class RequestService {
 
     private final RequestRepository requestRepository;
-//    private final EventRepository eventRepository;
+    private final EventClient eventClient;
     private final UserServiceClient userServiceClient;
 
 
@@ -101,7 +97,7 @@ public class RequestService {
         ParticipationRequest updatedRequest = requestRepository.save(request);
 
         if (wasConfirmed) {
-            updateConfirmedRequests(request.getEvent().getId());
+            updateConfirmedRequests(request.getEventId());
         }
 
 
@@ -110,9 +106,9 @@ public class RequestService {
     }
 
     public List<ParticipationRequestDto> getRequestsForUserEvent(Long userId, Long eventId) {
-        checkUserExists(userId);
+        getUser(userId);
         Event event = getEventOrThrow(eventId);
-        if (!event.getInitiator().getId().equals(userId)) {
+        if (!event.getInitiatorId().equals(userId)) {
             throw new NotFoundException("Событие не принадлежит пользователю id=" + userId);
         }
         List<ParticipationRequest> requests = requestRepository.findAllByEventId(eventId);
@@ -123,7 +119,7 @@ public class RequestService {
     @Transactional
     public EventRequestStatusUpdateResult changeRequestsStatus(Long userId, Long eventId, EventRequestStatusUpdateRequest statusUpdateRequest) {
         Event event = getEventOrThrow(eventId);
-        if (!event.getInitiator().getId().equals(userId)) {
+        if (!event.getInitiatorId().equals(userId)) {
             throw new NotFoundException("Событие не принадлежит пользователю id=" + userId);
         }
 
@@ -168,9 +164,9 @@ public class RequestService {
         Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(eventId);
         confirmedRequests = (confirmedRequests == null) ? 0 : confirmedRequests;
 
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено"));
+        Event event = getEventOrThrow(eventId);
         event.setConfirmedRequests(confirmedRequests);
-        eventRepository.save(event);
+        eventClient.save(event);
     }
 
     private User getUser(Long userId) {
@@ -182,7 +178,7 @@ public class RequestService {
     }
 
     private Event getEventOrThrow(Long eventId) {
-        return eventRepository.findById(eventId)
+        return eventClient.getEventFullById(eventId)
                 .orElseThrow(() -> {
                     log.error("Событие с id={} не найдено", eventId);
                     return new NotFoundException("Событие с id=" + eventId + " не найдено");

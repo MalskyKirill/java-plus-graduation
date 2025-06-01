@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.client.RequestClient;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
@@ -15,8 +16,6 @@ import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.event.service.EventService;
-
-import ru.practicum.ewm.request.service.RequestService;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ import java.util.List;
 public class PrivateEventController {
 
     private final EventService eventService;
-    private final RequestService requestService;
+    private final RequestClient requestClient;
 
     @GetMapping
     public ResponseEntity<List<EventShortDto>> getAllEventsOfUser(
@@ -73,7 +72,7 @@ public class PrivateEventController {
     public ResponseEntity<List<ParticipationRequestDto>> getRequestsForUserEvent(@PathVariable Long userId,
                                                                                  @PathVariable Long eventId) {
         log.info("[GET] Запросы на участие для события {} пользователя {}", eventId, userId);
-        List<ParticipationRequestDto> requests = requestService.getRequestsForUserEvent(userId, eventId);
+        List<ParticipationRequestDto> requests = requestClient.getRequestsForUserEvent(userId, eventId).getBody();
         return ResponseEntity.ok(requests);
     }
 
@@ -84,7 +83,7 @@ public class PrivateEventController {
             @RequestBody EventRequestStatusUpdateRequest statusUpdateRequest) {
         log.info("[PATCH] Обновление статусов запросов для события {} пользователя {}: {}",
                 userId, eventId, statusUpdateRequest);
-        EventRequestStatusUpdateResult result = requestService.changeRequestsStatus(userId, eventId, statusUpdateRequest);
+        EventRequestStatusUpdateResult result = requestClient.changeRequestsStatus(userId, eventId, statusUpdateRequest).getBody();
         return ResponseEntity.ok(result);
     }
 }
