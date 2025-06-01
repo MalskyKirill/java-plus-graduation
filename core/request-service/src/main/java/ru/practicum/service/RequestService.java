@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.UserServiceClient;
+import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
+import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
 //import ru.practicum.ewm.event.model.Event;
 //import ru.practicum.ewm.event.model.EventState;
@@ -106,70 +108,70 @@ public class RequestService {
         return RequestMapper.toParticipationRequestDto(updatedRequest);
 
     }
-//
-//    public List<ParticipationRequestDto> getRequestsForUserEvent(Long userId, Long eventId) {
-//        checkUserExists(userId);
-//        Event event = getEventOrThrow(eventId);
-//        if (!event.getInitiator().getId().equals(userId)) {
-//            throw new NotFoundException("Событие не принадлежит пользователю id=" + userId);
-//        }
-//        List<ParticipationRequest> requests = requestRepository.findAllByEventId(eventId);
-//        return requests.stream().map(RequestMapper::toParticipationRequestDto).collect(Collectors.toList());
-//    }
-//
-//
-//    @Transactional
-//    public EventRequestStatusUpdateResult changeRequestsStatus(Long userId, Long eventId, EventRequestStatusUpdateRequest statusUpdateRequest) {
-//        Event event = getEventOrThrow(eventId);
-//        if (!event.getInitiator().getId().equals(userId)) {
-//            throw new NotFoundException("Событие не принадлежит пользователю id=" + userId);
-//        }
-//
-//        List<Long> requestIds = statusUpdateRequest.getRequestIds();
-//
-//        List<ParticipationRequest> requests = requestRepository.findAllById(requestIds);
-//
-//        for (ParticipationRequest request : requests) {
-//
-//            if (request.getStatus() != RequestStatus.PENDING) {
-//                throw new ValidationException("Можно менять статус только у заявок в состоянии PENDING");
-//            }
-//            //проверяем лимит
-//            if (statusUpdateRequest.getStatus() == RequestStatus.CONFIRMED) {
-//                if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
-//                    throw new ParticipantLimitReachedException("Лимит участников уже достигнут");
-//                }
-//
-//                request.setStatus(RequestStatus.CONFIRMED);
-//
-//            } else {
-//
-//                request.setStatus(statusUpdateRequest.getStatus());
-//            }
-//        }
-//
-//        requestRepository.saveAll(requests);
-//        updateConfirmedRequests(eventId);
-//        List<ParticipationRequestDto> confirmedRequests = requests.stream()
-//                .filter(r -> r.getStatus() == RequestStatus.CONFIRMED)
-//                .map(RequestMapper::toParticipationRequestDto).collect(Collectors.toList());
-//
-//        List<ParticipationRequestDto> rejectedRequests = requests.stream()
-//                .filter(r -> r.getStatus() == RequestStatus.REJECTED)
-//                .map(RequestMapper::toParticipationRequestDto).collect(Collectors.toList());
-//
-//        return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
-//    }
-//
-//    @Transactional
-//    public void updateConfirmedRequests(Long eventId) {
-//        Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(eventId);
-//        confirmedRequests = (confirmedRequests == null) ? 0 : confirmedRequests;
-//
-//        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено"));
-//        event.setConfirmedRequests(confirmedRequests);
-//        eventRepository.save(event);
-//    }
+
+    public List<ParticipationRequestDto> getRequestsForUserEvent(Long userId, Long eventId) {
+        checkUserExists(userId);
+        Event event = getEventOrThrow(eventId);
+        if (!event.getInitiator().getId().equals(userId)) {
+            throw new NotFoundException("Событие не принадлежит пользователю id=" + userId);
+        }
+        List<ParticipationRequest> requests = requestRepository.findAllByEventId(eventId);
+        return requests.stream().map(RequestMapper::toParticipationRequestDto).collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public EventRequestStatusUpdateResult changeRequestsStatus(Long userId, Long eventId, EventRequestStatusUpdateRequest statusUpdateRequest) {
+        Event event = getEventOrThrow(eventId);
+        if (!event.getInitiator().getId().equals(userId)) {
+            throw new NotFoundException("Событие не принадлежит пользователю id=" + userId);
+        }
+
+        List<Long> requestIds = statusUpdateRequest.getRequestIds();
+
+        List<ParticipationRequest> requests = requestRepository.findAllById(requestIds);
+
+        for (ParticipationRequest request : requests) {
+
+            if (request.getStatus() != RequestStatus.PENDING) {
+                throw new ValidationException("Можно менять статус только у заявок в состоянии PENDING");
+            }
+            //проверяем лимит
+            if (statusUpdateRequest.getStatus() == RequestStatus.CONFIRMED) {
+                if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
+                    throw new ParticipantLimitReachedException("Лимит участников уже достигнут");
+                }
+
+                request.setStatus(RequestStatus.CONFIRMED);
+
+            } else {
+
+                request.setStatus(statusUpdateRequest.getStatus());
+            }
+        }
+
+        requestRepository.saveAll(requests);
+        updateConfirmedRequests(eventId);
+        List<ParticipationRequestDto> confirmedRequests = requests.stream()
+                .filter(r -> r.getStatus() == RequestStatus.CONFIRMED)
+                .map(RequestMapper::toParticipationRequestDto).collect(Collectors.toList());
+
+        List<ParticipationRequestDto> rejectedRequests = requests.stream()
+                .filter(r -> r.getStatus() == RequestStatus.REJECTED)
+                .map(RequestMapper::toParticipationRequestDto).collect(Collectors.toList());
+
+        return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
+    }
+
+    @Transactional
+    public void updateConfirmedRequests(Long eventId) {
+        Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(eventId);
+        confirmedRequests = (confirmedRequests == null) ? 0 : confirmedRequests;
+
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено"));
+        event.setConfirmedRequests(confirmedRequests);
+        eventRepository.save(event);
+    }
 
     private User getUser(Long userId) {
         return userServiceClient.getUserById(userId)
@@ -179,20 +181,13 @@ public class RequestService {
             });
     }
 
-//    private Event getEventOrThrow(Long eventId) {
-//        return eventRepository.findById(eventId)
-//                .orElseThrow(() -> {
-//                    log.error("Событие с id={} не найдено", eventId);
-//                    return new NotFoundException("Событие с id=" + eventId + " не найдено");
-//                });
-//    }
-//
-//
-//    private User getUserOrThrow(Long id) {
-//        return userRepository.findById(id)
-//                .orElseThrow(() -> {
-//                    log.error("Пользователь с id={} не найден", id);
-//                    return new NotFoundException("Пользователь с id=" + id + " не найден");
-//                });
-//    }
+    private Event getEventOrThrow(Long eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> {
+                    log.error("Событие с id={} не найдено", eventId);
+                    return new NotFoundException("Событие с id=" + eventId + " не найдено");
+                });
+    }
+
+
 }

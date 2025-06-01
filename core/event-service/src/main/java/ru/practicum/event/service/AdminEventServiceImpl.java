@@ -6,14 +6,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.category.repository.CategoryRepository;
-import ru.practicum.ewm.event.dto.mapper.EventMapper;
-import ru.practicum.ewm.event.model.Event;
-import ru.practicum.ewm.event.model.EventState;
-import ru.practicum.ewm.event.repository.EventRepository;
-import ru.practicum.ewm.exception.BadRequestException;
-import ru.practicum.ewm.exception.NotFoundException;
-import ru.practicum.ewm.exception.ValidationException;
+
+import ru.practicum.category.repository.CategoryRepository;
+import ru.practicum.dto.event.EventFullDto;
+import ru.practicum.dto.event.StateAction;
+import ru.practicum.dto.event.UpdateEventAdminRequest;
+import ru.practicum.event.mapper.EventMapper;
+import ru.practicum.event.model.Event;
+import ru.practicum.event.model.EventState;
+import ru.practicum.event.repository.EventRepository;
+import ru.practicum.exception.BadRequestException;
+import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.ValidationException;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +33,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
+    private final EventMapper eventMapper;
 
     @Override
     public List<EventFullDto> findEventByParams(List<Long> userIds, List<EventState> states, List<Long> categoryIds,
@@ -36,7 +42,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         Pageable pageable = PageRequest.of(from.intValue(), size.intValue());
         Page<Event> events = eventRepository.findByParams(userIds, states, categoryIds, rangeStart, rangeEnd, pageable);
 
-        return EventMapper.toEventFullDto(events);
+        return eventMapper.toEventFullDto(events.toList());
     }
 
     @Transactional
@@ -77,7 +83,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             existEvent.setTitle(updateEventAdminRequest.getTitle());
         }
 
-        return EventMapper.toEventFullDto(eventRepository.save(existEvent));
+        return eventMapper.toEventFullDto(eventRepository.save(existEvent));
     }
 
     private Event checkEventExist(Long id) {
