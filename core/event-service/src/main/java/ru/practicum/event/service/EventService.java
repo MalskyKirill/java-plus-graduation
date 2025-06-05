@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
-import ru.practicum.client.UserServiceClient;
+import ru.practicum.client.UserClient;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final UserServiceClient userServiceClient;
+    private final UserClient userClient;
     private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
 
@@ -137,7 +137,7 @@ public class EventService {
     }
 
     private User getUserOrThrow(Long userId) {
-        return userServiceClient.getUserById(userId)
+        return userClient.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id=" + userId + " не найден"));
     }
 

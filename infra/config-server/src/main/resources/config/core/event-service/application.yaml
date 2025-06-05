@@ -16,6 +16,15 @@ spring:
         url: jdbc:postgresql://localhost:6434/eventdb
         username: postgres
         password: 12345
+    cloud:
+        openfeign:
+            enabled: true
+            okhttp:
+                enabled: true
+
+discovery:
+    services:
+        stats-server-id: stat-server
 
 logging:
     level:

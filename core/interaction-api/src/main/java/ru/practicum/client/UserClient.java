@@ -10,9 +10,10 @@ import ru.practicum.user.model.User;
 import java.util.List;
 import java.util.Optional;
 
+@FeignClient(name = "user-service", path = "/internal/api/users", contextId = "userServiceClient")
 public interface UserClient {
-    @GetMapping("/{id}")
-    Optional<User> getUserById(@PathVariable Long id) throws FeignException;
+    @GetMapping("/{userId}")
+    Optional<User> getUserById(@PathVariable Long userId) throws FeignException;
 
     @GetMapping("/list")
     List<User> getUsersWithIds(@RequestParam List<Long> ids) throws FeignException;

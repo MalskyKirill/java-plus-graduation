@@ -1,5 +1,6 @@
 package ru.practicum.controller;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,7 @@ public class RequestClientController implements RequestClient {
     private final RequestService requestService;
 
     @Override
-    public ResponseEntity<List<ParticipationRequestDto>> getRequestsForUserEvent(@PathVariable Long userId,
-                                                                                 @PathVariable Long eventId) {
+    public ResponseEntity<List<ParticipationRequestDto>> getRequestsForUserEvent(Long userId, Long eventId) {
         log.info("[GET] Запросы пользователя с ID {} по событию с ID {}", userId, eventId);
         List<ParticipationRequestDto> requests = requestService.getRequestsForUserEvent(userId, eventId);
 
@@ -32,9 +32,7 @@ public class RequestClientController implements RequestClient {
     }
 
     @Override
-    public ResponseEntity<EventRequestStatusUpdateResult> changeRequestsStatus(@PathVariable Long userId,
-                                                                               @PathVariable Long eventId,
-                                                                               @RequestBody EventRequestStatusUpdateRequest statusUpdateRequest) {
+    public ResponseEntity<EventRequestStatusUpdateResult> changeRequestsStatus(Long userId, Long eventId, EventRequestStatusUpdateRequest statusUpdateRequest) {
         log.info("[PATCH] Изменение статуса запроса пользователя с ID {} для события с ID {} с телом {}", userId, eventId, statusUpdateRequest);
         EventRequestStatusUpdateResult response = requestService.changeRequestsStatus(userId, eventId, statusUpdateRequest);
 

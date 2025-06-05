@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>request-service</artifactId>
+    <name>request-service</name>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -74,6 +75,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
         </dependency>
     </dependencies>
 

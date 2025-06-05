@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.client.UserServiceClient;
+import ru.practicum.client.UserClient;
 import ru.practicum.comment.mapper.CommentMapper;
 import ru.practicum.comment.model.Comment;
 import ru.practicum.comment.repository.CommentRepository;
@@ -29,7 +29,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
     private final CommentRepository commentRepository;
     private final EventRepository eventRepository;
-    private final UserServiceClient userServiceClient;
+    private final UserClient userServiceClient;
 
     @Override
     @Transactional

@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.EventClient;
-import ru.practicum.client.UserServiceClient;
+import ru.practicum.client.UserClient;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
-
-
 
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
@@ -36,7 +34,7 @@ public class RequestService {
 
     private final RequestRepository requestRepository;
     private final EventClient eventClient;
-    private final UserServiceClient userServiceClient;
+    private final UserClient userClient;
 
 
     public List<ParticipationRequestDto> getRequestsOfUser(Long userId) {
@@ -63,6 +61,7 @@ public class RequestService {
         if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
             throw new ValidationException("Нельзя повторно подавать заявку на то же событие.");
         }
+
         if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
             throw new ParticipantLimitReachedException("Лимит участников уже достигнут");
         }
@@ -170,7 +169,7 @@ public class RequestService {
     }
 
     private User getUser(Long userId) {
-        return userServiceClient.getUserById(userId)
+        return userClient.getUserById(userId)
             .orElseThrow(() -> {
                 log.error("Пользователь с id={} не найден", userId);
                 return new NotFoundException("Пользователь с id=" + userId + " не найден");

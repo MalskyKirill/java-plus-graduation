@@ -24,7 +24,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("""
             select e from Event e
-            where (coalesce(:userIds, null) is null or e.initiator.id in :userIds)
+            where (coalesce(:userIds, null) is null or e.initiatorId in :userIds)
             and (coalesce(:states, null) is null or e.state in :states)
             and (coalesce(:categoryIds, null) is null or e.category.id in :categoryIds)
             and (coalesce(:rangeStart, null) is null or e.eventDate >= :rangeStart)

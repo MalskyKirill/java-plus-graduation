@@ -16,6 +16,11 @@ spring:
         url: jdbc:postgresql://localhost:6432/userdb
         username: postgres
         password: 12345
+    cloud:
+        openfeign:
+            enabled: true
+            okhttp:
+                enabled: true
 
 logging:
     level:

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.client.EventClient;
 import ru.practicum.dto.user.NewUserRequest;
 import ru.practicum.dto.user.UserDto;
 import ru.practicum.exception.ValidationException;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class AdminUserService {
 
     private final UserRepository userRepository;
+    private final EventClient eventClient;
 
     public List<UserDto> getUsersByParams(List<Long> ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);

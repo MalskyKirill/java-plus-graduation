@@ -15,7 +15,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/internal/api/users")
+@RequestMapping("internal/api/users")
 public class UserClientController implements UserClient{
     private final AdminUserService adminUserService;
 

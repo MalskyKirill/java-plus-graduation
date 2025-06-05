@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
-import ru.practicum.client.UserServiceClient;
+import ru.practicum.client.UserClient;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class EventMapper {
-    private final UserServiceClient userServiceClient;
+    private final UserClient userServiceClient;
 
     public static Event toEvent(NewEventDto dto, User initiator, Category category) {
         Event event = new Event();

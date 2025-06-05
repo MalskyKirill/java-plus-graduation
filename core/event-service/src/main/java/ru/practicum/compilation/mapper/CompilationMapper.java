@@ -4,7 +4,7 @@ package ru.practicum.compilation.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.category.model.Category;
-import ru.practicum.client.UserServiceClient;
+import ru.practicum.client.UserClient;
 import ru.practicum.compilation.model.Compilation;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.dto.compilation.NewCompilationDto;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class CompilationMapper {
-    private final UserServiceClient userServiceClient;
+    private final UserClient userServiceClient;
     private final EventMapper eventMapper;
 
     public CompilationDto toCompilationDto(Compilation compilation) {

@@ -35,4 +35,5 @@ public class EventClientController implements EventClient {
         log.info("Сформирован ответ Post /admin/events с телом: {}", response);
         return response;
     }
+
 }
