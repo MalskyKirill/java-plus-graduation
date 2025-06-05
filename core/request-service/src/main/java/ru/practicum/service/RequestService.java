@@ -50,6 +50,8 @@ public class RequestService {
         User user = getUser(userId);
         Event event = getEventOrThrow(eventId);
 
+        System.out.println(event.toString());
+
 
         if (event.getInitiatorId().equals(userId)) {
             throw new ValidationException("Инициатор события не может добавить запрос на участие в своём событии.");
@@ -163,8 +165,9 @@ public class RequestService {
         Long confirmedRequests = requestRepository.countConfirmedRequestsByEventId(eventId);
         confirmedRequests = (confirmedRequests == null) ? 0 : confirmedRequests;
 
-        Event event = getEventOrThrow(eventId);
+        Event event = eventClient.getEventFullById(eventId).orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено"));
         event.setConfirmedRequests(confirmedRequests);
+        System.out.println("____________________" + event.toString());
         eventClient.save(event);
     }
 

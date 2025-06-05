@@ -87,6 +87,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
     @Override
+    @Transactional
     public Event saveEventFull(Event event) {
         return eventRepository.save(event);
     }
