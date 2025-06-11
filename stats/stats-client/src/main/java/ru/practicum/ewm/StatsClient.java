@@ -15,12 +15,5 @@ import java.util.List;
 @FeignClient(name = "stats-server")
 public interface StatsClient {
 
-    @PostMapping("/hit")
-    String addHit(@RequestBody EndpointHitInputDto hitDto) throws FeignException;
 
-    @GetMapping("/stats")
-    ResponseEntity<Object> getStats(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
-                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
-                                    @RequestParam(required = false) List<String> uris,
-                                    @RequestParam(required = false) Boolean unique) throws FeignException;
 }
