@@ -17,10 +17,10 @@ import ru.practicum.dto.event.EventSort;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 import ru.practicum.event.repository.EventRepository;
-import ru.practicum.ewm.EndpointHitInputDto;
+
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.ewm.StatsClient;
-import ru.practicum.ewm.ViewStatsOutputDto;
+
 import ru.practicum.exception.BadRequestException;
 import ru.practicum.exception.NotFoundException;
 
@@ -49,8 +49,8 @@ public class PublicEventServiceImpl implements PublicEventService {
             throw new NotFoundException("Event c id " + id + "еще не опубликован");
         }
 
-        addHit(request);
-        updateEventViewsInRepository(event);
+//        addHit(request);
+//        updateEventViewsInRepository(event);
 
         EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
 
@@ -88,11 +88,12 @@ public class PublicEventServiceImpl implements PublicEventService {
 
         List<Event> events = pageEvents.getContent();
 
-        addHit(request);
+//        addHit(request);
 
         List<EventShortDto> eventShortDtos = new ArrayList<>();
         for (Event event : events) {
-            Event ev = updateEventViewsInRepository(event);
+//            Event ev = updateEventViewsInRepository(event);
+            Event ev = event;
             EventShortDto dto = eventMapper.toEventShortDto(ev);
             eventShortDtos.add(dto);
         }
@@ -116,40 +117,40 @@ public class PublicEventServiceImpl implements PublicEventService {
         return eventRepository.findById(id);
     }
 
-    private void addHit(HttpServletRequest request) {
-        EndpointHitInputDto hit = new EndpointHitInputDto();
-        hit.setApp(APP_NAME);
-        hit.setUri(request.getRequestURI());
-        hit.setIp(request.getRemoteAddr());
-        hit.setTimestamp(LocalDateTime.now());
-        statsClient.addHit(hit);
-    }
+//    private void addHit(HttpServletRequest request) {
+//        EndpointHitInputDto hit = new EndpointHitInputDto();
+//        hit.setApp(APP_NAME);
+//        hit.setUri(request.getRequestURI());
+//        hit.setIp(request.getRemoteAddr());
+//        hit.setTimestamp(LocalDateTime.now());
+//        statsClient.addHit(hit);
+//    }
 
-    private Event updateEventViewsInRepository(Event event) {
-
-        try {
-            Long eventId = event.getId();
-            String eventUri = "/events/" + eventId;
-            ResponseEntity<Object> responseEntity = statsClient.getStats(LocalDateTime.now().minusYears(999), LocalDateTime.now().plusYears(1), List.of(eventUri), true);
-
-            if (responseEntity.getStatusCode().is2xxSuccessful()) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<Map<String, Object>> responseBody = objectMapper.convertValue(responseEntity.getBody(), new TypeReference<List<Map<String, Object>>>() {
-                });
-
-                List<ViewStatsOutputDto> responseList = responseBody.stream()
-                    .map(map -> new ViewStatsOutputDto((String) map.get("app"), (String) map.get("uri"), ((Number) map.get("hits")).longValue()))
-                    .toList();
-
-                if (!responseList.isEmpty()) {
-                    ViewStatsOutputDto viewStatsOutputDto = responseList.getFirst();
-                    event.setViews(viewStatsOutputDto.getHits());
-                    return eventRepository.save(event);
-                }
-            }
-            return event;
-        } catch (Exception e) {
-            return event;
-        }
-    }
+//    private Event updateEventViewsInRepository(Event event) {
+//
+//        try {
+//            Long eventId = event.getId();
+//            String eventUri = "/events/" + eventId;
+//            ResponseEntity<Object> responseEntity = statsClient.getStats(LocalDateTime.now().minusYears(999), LocalDateTime.now().plusYears(1), List.of(eventUri), true);
+//
+//            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                List<Map<String, Object>> responseBody = objectMapper.convertValue(responseEntity.getBody(), new TypeReference<List<Map<String, Object>>>() {
+//                });
+//
+//                List<ViewStatsOutputDto> responseList = responseBody.stream()
+//                    .map(map -> new ViewStatsOutputDto((String) map.get("app"), (String) map.get("uri"), ((Number) map.get("hits")).longValue()))
+//                    .toList();
+//
+//                if (!responseList.isEmpty()) {
+//                    ViewStatsOutputDto viewStatsOutputDto = responseList.getFirst();
+//                    event.setViews(viewStatsOutputDto.getHits());
+//                    return eventRepository.save(event);
+//                }
+//            }
+//            return event;
+//        } catch (Exception e) {
+//            return event;
+//        }
+//    }
 }
