@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>avro-schema</module>
+        <module>proto-schema</module>
     </modules>
 
 
