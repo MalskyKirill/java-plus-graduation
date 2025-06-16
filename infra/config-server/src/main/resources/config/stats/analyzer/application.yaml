@@ -1,0 +1,40 @@
+server:
+    port: 0
+
+kafka:
+    topic:
+        actions: stats.user-actions.v1
+        similarity: stats.events-similarity.v1
+    bootstrap-server: localhost:9092
+    group-id:
+        user-actions: user-actions
+        event-similarity: event-similarity
+
+spring:
+    jpa:
+        hibernate:
+            ddl-auto: none
+        properties:
+            hibernate:
+                format_sql: true
+    sql:
+        init:
+            mode: always
+    datasource:
+        driverClassName: org.postgresql.Driver
+        url: jdbc:postgresql://localhost:6541/analyzer
+        username: postgres
+        password: 12345
+    cloud:
+        openfeign:
+            enabled: true
+            okhttp:
+                enabled: true
+
+logging:
+    level:
+        org.springframework.orm.jpa: INFO
+        org.springframework.transaction: INFO
+        org.springframework.transaction.interceptor: INFO
+        org.springframework.orm.jpa.JpaTransactionManager: DEBUG
+        org.hibernate.SQL: DEBUG
