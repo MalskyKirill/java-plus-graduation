@@ -12,6 +12,7 @@ import ru.practicum.dto.request.ParticipationRequestDto;
 
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
+import ru.practicum.ewm.CollectorClient;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ParticipantLimitReachedException;
 import ru.practicum.exception.ValidationException;
@@ -35,7 +36,7 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private final EventClient eventClient;
     private final UserClient userClient;
-
+    private final CollectorClient collectorClient;
 
     public List<ParticipationRequestDto> getRequestsOfUser(Long userId) {
         getUser(userId);
@@ -85,6 +86,8 @@ public class RequestService {
         if (RequestStatus.CONFIRMED.equals(savedRequest.getStatus())) {
             updateConfirmedRequests(event.getId());
         }
+
+        collectorClient.sendEventRegistration(userId, eventId);
         return RequestMapper.toParticipationRequestDto(savedRequest);
     }
 

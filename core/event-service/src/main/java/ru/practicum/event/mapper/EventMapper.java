@@ -41,7 +41,7 @@ public class EventMapper {
         event.setCreatedOn(LocalDateTime.now());
         event.setInitiatorId(initiator.getId());
         event.setCategory(category);
-        event.setViews(0L);
+        event.setRating(0D);
         event.setConfirmedRequests(0L);
 
         return event;
@@ -97,7 +97,7 @@ public class EventMapper {
         dto.setInitiator(UserMapper.toUserShortDto(user));
         dto.setCategory(CategoryMapper.mapToCategoryDto(event.getCategory()));
         dto.setConfirmedRequests(event.getConfirmedRequests() != null ? event.getConfirmedRequests() : 0L);
-        dto.setViews(event.getViews() != null ? event.getViews() : 0L);
+        dto.setRating(event.getRating() != null ? event.getRating() : 0D);
         return dto;
     }
 
@@ -118,7 +118,7 @@ public class EventMapper {
         dto.setInitiator(UserMapper.toUserShortDto(user));
         dto.setCategory(CategoryMapper.mapToCategoryDto(event.getCategory()));
         dto.setConfirmedRequests(event.getConfirmedRequests() != null ? event.getConfirmedRequests() : 0L);
-        dto.setViews(event.getViews() != null ? event.getViews() : 0L);
+        dto.setRating(event.getRating() != null ? event.getRating() : 0D);
         return dto;
     }
 
@@ -141,7 +141,7 @@ public class EventMapper {
         dto.setPaid(event.isPaid());
         dto.setTitle(event.getTitle());
         dto.setConfirmedRequests(event.getConfirmedRequests() != null ? event.getConfirmedRequests() : 0L);
-        dto.setViews(event.getViews() != null ? event.getViews() : 0L);
+        dto.setRating(event.getRating() != null ? event.getRating() : 0D);
         dto.setInitiator(UserMapper.toUserShortDto(user));
         dto.setCategory(CategoryMapper.mapToCategoryDto(event.getCategory()));
         return dto;
@@ -155,7 +155,7 @@ public class EventMapper {
         dto.setPaid(event.isPaid());
         dto.setTitle(event.getTitle());
         dto.setConfirmedRequests(event.getConfirmedRequests() != null ? event.getConfirmedRequests() : 0L);
-        dto.setViews(event.getViews() != null ? event.getViews() : 0L);
+        dto.setRating(event.getRating() != null ? event.getRating() : 0D);
         dto.setInitiator(UserMapper.toUserShortDto(user));
         dto.setCategory(CategoryMapper.mapToCategoryDto(event.getCategory()));
         return dto;

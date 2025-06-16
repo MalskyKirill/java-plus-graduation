@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS events
     published_on       TIMESTAMP,
     initiator_id       BIGINT    NOT NULL,
     category_id        BIGINT,
-    views              BIGINT    NOT NULL,
+    rating             DOUBLE PRECISION NOT NULL,
     confirmed_requests BIGINT    NOT NULL
 
 );

@@ -18,7 +18,6 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false)
     private String annotation;
 
@@ -28,10 +27,8 @@ public class Event {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-
     @Embedded
     private Location location;
-
 
     private boolean paid;
 
@@ -60,8 +57,8 @@ public class Event {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "views", nullable = false)
-    private Long views = 0L;
+    @Column(name = "rating", nullable = false)
+    private Double rating = 0D;
 
     @Column(name = "confirmed_requests", nullable = false)
     private Long confirmedRequests = 0L;
