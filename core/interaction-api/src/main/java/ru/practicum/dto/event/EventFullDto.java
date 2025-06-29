@@ -28,6 +28,6 @@ public class EventFullDto {
     private LocalDateTime publishedOn;
     private UserShortDto initiator;
     private CategoryDto category;
-    private Long confirmedRequests; // Количество подтверждённых заявок
-    private Long views; // Количество просмотров
+    private Long confirmedRequests;
+    private Double rating;
 }
